@@ -1,0 +1,27 @@
+# depslib dependency file v1.0
+1390999561 source:/home/defgsus/prog/qt_project/cudagol/src/cudagol.cpp
+	"cudagol.h"
+	<cstdlib>
+	<iostream>
+
+1390996586 /home/defgsus/prog/qt_project/cudagol/src/cudagol.h
+	<cstddef>
+	<inttypes.h>
+	<vector>
+
+1390994870 source:/home/defgsus/prog/qt_project/cudagol/src/cudagol_kernel.cu
+	<inttypes.h>
+	<iostream>
+	"cudautil.h"
+
+1390994870 /home/defgsus/prog/qt_project/cudagol/src/cudautil.h
+	<cstdlib>
+	<iostream>
+	<iomanip>
+	<cuda_runtime.h>
+
+1390998954 source:/home/defgsus/prog/qt_project/cudagol/src/main.cpp
+	<iostream>
+	"cudautil.h"
+	"cudagol.h"
+
