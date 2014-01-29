@@ -8,6 +8,7 @@
 #ifndef CUDAGOL_H_INCLUDED
 #define CUDAGOL_H_INCLUDED
 
+#include <cstddef>
 #include <inttypes.h>
 #include <vector>
 
