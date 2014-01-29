@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="cudagol" />
+		<Option pch_mode="2" />
+		<Option compiler="cuda" />
+		<Build>
+			<Target title="Linux_Debug">
+				<Option output="bin/linux/cudagol_dbg" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/linux/dbg/" />
+				<Option type="1" />
+				<Option compiler="cuda" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Linux_Release">
+				<Option output="bin/linux/cudagol" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/linux/" />
+				<Option type="1" />
+				<Option compiler="cuda" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Unit filename="cudagol.cpp" />
+		<Unit filename="cudagol.h" />
+		<Unit filename="cudagol_kernel.cu">
+			<Option compile="1" />
+			<Option link="1" />
+		</Unit>
+		<Unit filename="cudautil.h" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
