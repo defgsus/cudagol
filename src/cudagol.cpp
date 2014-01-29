@@ -138,7 +138,7 @@ void Gol::print(const Map& map, size_t width, size_t height) const
 
 	// top line
 
-	for (int i=0; i<W; ++i)
+    for (size_t i=0; i<W; ++i)
 		std::cout << "-";
 	std::cout << "\n";
 

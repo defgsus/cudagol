@@ -1,11 +1,17 @@
 
-TARGET = QtCuda
+##### Qt specifics #####
 
 TEMPLATE = app
 
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
+
+###### defines ########
+
+QMAKE_CXXFLAGS_RELEASE += -O2 -DNDEBUG
+
+######## files ########
 
 SOURCES += \
     src/main.cpp \
@@ -26,7 +32,8 @@ CUDA_SOURCES += \
 LIBS += -lrt
 
 
-####### cuda setup #####
+####### cuda setup ########
+# http://stackoverflow.com/questions/16053038/cuda-with-qt-in-qt-creator-on-ubuntu-12-04
 
 NVCC_OPTIONS = --use_fast_math
 
