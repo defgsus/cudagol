@@ -122,18 +122,50 @@ void printDeviceProps(int dev)
 
 
 
+// macro for printing elapsed time and iterations/sec
+#define PRINT_TIME(t) \
+    std::cout << "took " << t << " seconds, = " \
+              << (int)((double)numIter / t) << " iterations per second.\n";
 
 
+// test cuda gol with certain number of threads per block
+void testCuda(Gol& gol, const Gol::Map& init_map, const Gol::Map& reference_map,
+                        double cpu_time, size_t numIter, size_t numThreads)
+{
+    Messure m;
 
+    std::cout << "\n-- " << numThreads << " cuda threads:\n";
+
+    // re-init gol map
+    gol.map = init_map;
+
+    // run the cuda kernel
+    m.start();
+    gol.step_cuda(numIter, numThreads);
+    double cuda_time = m.elapsed();
+
+    // print time and ratio
+
+    PRINT_TIME(cuda_time);
+    std::cout << "\nCuda speed-up = " << cpu_time / cuda_time << "x\n";
+
+    // compare resulting map
+
+    float d = Gol::compare(gol.map, reference_map);
+    if (d != 0)
+    {
+        std::cout << "UH-OH! Cuda calculated map differs from CPU map by " << d << "%\n";
+        std::cout << "cpu:\n";
+        gol.print(reference_map);
+        std::cout << "cuda:\n";
+        gol.print(gol.map);
+    }
+}
 
 
 /** compare CPU versus GPU */
-void compareSpeed(int width, int height, int numIter)
+void compareSpeed(size_t width, size_t height, size_t numIter)
 {
-	// macro for printing elapsed time and iterations/sec
-	#define PRINT_TIME(t) \
-		std::cout << "took " << t << " seconds, = " \
-				  << (int)((double)numIter / t) << " iterations per second.\n";
 
 	std::cout << "\ncomparing cpu/gpu speed on " << width << "x" << height
               << " map with " << numIter << " iterations.\n\n";
@@ -146,54 +178,37 @@ void compareSpeed(int width, int height, int numIter)
 	// used to compare cpu and gpu output
 	Gol::Map reference;
 
-	Messure m;
-
 	// cpu run
 
 	std::cout << "------ CPU -----\n";
 
-	m.start();
+    Messure m;
 	gol.step_cpu(numIter);
 	double cpu_time = m.elapsed();
 	PRINT_TIME(cpu_time);
 
 	// keep result
 	reference = gol.map;
-	// restore init state
-	gol.map = backup;
 
 	std::cout << "\n------ CUDA ------\n";
-	m.start();
-	gol.step_cuda(numIter, 256); // try different number-of-threads here
-	double cuda_time = m.elapsed();
-	PRINT_TIME(cuda_time);
 
-	#undef PRINT_TIME
+    // test different thread numbers
+    testCuda(gol, backup, reference, cpu_time, numIter, 64);
+    testCuda(gol, backup, reference, cpu_time, numIter, 128);
+    testCuda(gol, backup, reference, cpu_time, numIter, 256);
+    testCuda(gol, backup, reference, cpu_time, numIter, 512);
+    testCuda(gol, backup, reference, cpu_time, numIter, 768);
+    testCuda(gol, backup, reference, cpu_time, numIter, 1024);
 
-	// print ratio
 
-	std::cout << "\nCuda speed-up = " << cpu_time / cuda_time << "x\n";
 
-	// compare result
-
-	float d = Gol::compare(gol.map, reference);
-	if (d != 0)
-	{
-		std::cout << "UH-OH! Cuda calculated map differs from CPU map by " << d << "%\n";
-		std::cout << "cpu:\n";
-		gol.print(reference);
-		std::cout << "cuda:\n";
-		gol.print(gol.map);
-	}
-	else
-	{
-		// print a bit of the map to show it's actually doing something
-		std::cout << "\nresult:\n";
-		gol.print(gol.map, 70, 8);
-	}
+    // print a bit of the map to show it's actually doing something
+    std::cout << "\na piece of the final map:\n";
+    gol.print(gol.map, 70, 8);
 
 }
 
+#undef PRINT_TIME
 
 int main()
 {
@@ -202,7 +217,7 @@ int main()
 	// Cuda devices are initialized automatically
 	// You could do a cudaSetDevice() to choose among different devices, however
 
-	// print some devices properties
+    // print some device properties
 	printDeviceProps(0);
 
 	// compare CPU vs GPU gameoflife implementation
